@@ -1,2 +1,9 @@
 ---
-# tasks file for .
+- name: Update repositories cache and install "nginx" package
+  apt:
+    name: nginx-full
+    state: latest
+  when: ansible_pkg_mgr == "apt"
+- name:
+  
+
