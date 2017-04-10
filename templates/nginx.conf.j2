@@ -1,70 +1,58 @@
 
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
+user {{ nginx.user }};
+worker_processes {{ nginx.worker_processes }};
+pid {{ nginx.pid }};
 
 events {
-    worker_connections 768;
+    worker_connections {{ nginx.worker_connections }};
 }
 
 http {
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-    keepalive_timeout 65;
-    types_hash_max_size 2048;
-    server_tokens off;
+    sendfile {{ nginx.sendfile }};
+    tcp_nopush {{ nginx.tcp_nopush }};
+    tcp_nodelay {{ nginx.tcp_nodelay }};
+    keepalive_timeout {{ nginx.keepalive_timeout }};
+    types_hash_max_size {{ nginx.types_hash_max_size }};
+    server_tokens {{ nginx.server_tokens }};
     
     include /etc/nginx/mime.types;
-    default_type application/octet-stream;
+    default_type {{ nginx.default_type }};
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2; 
+    ssl_protocols {{ nginx.ssl_protocols }};
+    ssl_ciphers {{ nginx.ssl_ciphers }};
+    ssl_prefer_server_ciphers {{ nginx.ssl_prefer_server_ciphers }};
 
+    log_format {{ nginx.log_format }};
 
-    ssl_prefer_server_ciphers on;
+    access_log {{ nginx.access_log }};
+    error_log {{ nginx.error_log }};
 
-    log_format ext_combined
-        '[$time_iso8601] >>$upstream_addr <<$remote_addr - '
-        '$status $request_method $scheme://$host$request_uri '
-        '>>$bytes_sent($body_bytes_sent)bytes '
-        '<<"$http_referer" -- <$http_user_agent> $request';
-
-    access_log /var/log/nginx/access.log;
-    access_log /var/log/nginx/access_ext_combined.log ext_combined;
-    error_log /var/log/nginx/error.log;
-
-    gzip on;
-    gzip_disable "msie6";
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip {{ nginx.gzip }};
+    gzip_disable {{ nginx.gzip_disable }};
+    gzip_types {{ nginx.gzip_types }};
     {% for served_domain in served_domains %}
         server {
 
-            index {% for item in index %}
+            index {% for item in served_domain.index %}
                 {{ item }}
             {% endfor %};
 
-            {% if server.https %}
+            {% if served_domain.https %}
                 listen 443;
                 ssl on;
+                ssl_certificate     {{ served_domain.fullchain_path }};
+                ssl_certificate_key {{ served_domain.privkey_path }};
 
             {% else %}
                 listen 80;
             {% endif %} 
-            server_name {% for domain in server.domains %}
-                {% if domain_suffixe %}
-                    {% for suffix in domain_suffixe %}
-                        {{ domain.suffix }}
-                    {% endfor %}
-                    
-                {% endif %}
-                {% if domain.endswith('.') %}
-                    {{domain}}
-                {% endif %}
+            server_name {% for domain in [domain_preffixe, served_domain.domains, domain_suffixe]| product %}
+                {{ domain|join(".") }}
             {% endfor %};
 
-            {% for location_var in server.locations %}
+            {% for location_var in served_domain.locations %}
                 location {{location_var.condition}} {
-                    {% for ip_range in allowed_ip_ranges %}
+                    {% for ip_range in served_domain.allowed_ip_ranges %}
                         allow {{ip_range}};
                         deny all;
                     {% endfor %}

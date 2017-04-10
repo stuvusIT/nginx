@@ -2,8 +2,15 @@
 - name: Update repositories cache and install "nginx" package
   apt:
     name: nginx-full
-    state: latest
   when: ansible_pkg_mgr == "apt"
-- name:
-  
+- name: set nginx config
+  template:
+    src: templates/nginx.conf.j2
+    dest: /home/fritz/code/stuvus/nginx/nginx.conf
+- name: Enable and start nginx
+  systemd:
+    name: nginx.service
+    state: started
+    enabled: True
+  when: ansible_service_mgr == "systemd"
 

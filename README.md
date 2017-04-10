@@ -10,6 +10,7 @@ An apt-based package manager
 ## Role Variables
 
 ```yml
+
 ```
 
 
@@ -27,6 +28,42 @@ Including an example of how to use your role (for instance, with variables passe
 ### Vars
 
 ```yml
+domain_suffixe:
+  - stuvus.uni-stuttgart.de.
+  - stuvus.de.
+
+domain_prefixe;
+  - www
+served_domains:
+  - domains: 
+    - ticket
+    - zammad
+    privkey_path: <path at target server>  # privkey.pem will placed there>
+    fullchain_path: <path at target server>  # fullchain.pem will placed there>
+    default_server: [true|false*]
+    allowed_ip_ranges:
+      - 172.27.10.0/24
+    https: true
+    index:
+      - index.php
+      - index.html
+    locations:
+      - condition: /
+        content:
+        | 
+          try_files $1 $uri $uri/ /index.php$is_args$args;
+      - condition: ~ ^/index\.php(.*)$
+        content:
+        | 
+         fastcgi_index index.php;
+         include /etc/nginx/fastcgi_params;
+         try_files $uri =404;
+         fastcgi_split_path_info ^(.+\.php)(/.+)$;
+         fastcgi_pass unix:/run/php/php7.0-fpm.sock;m
+         fastcgi_param SCRIPT_FILENAME /usr/share/icingaweb2/public/index.php;
+         fastcgi_param ICINGAWEB_CONFIGDIR /etc/icingaweb2;
+         fastcgi_param REMOTE_USER $remote_user;
+
 ```
 
 
