@@ -12,7 +12,7 @@ An apt-based package manager
 ### Nginx Vars
 See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) for a description of the variables.
 | Name                      | Required                 | Default        | 
-|---------------------------|:------------------------:|-----------------|
+|---------------------------|:------------------------:|---------------|
 | `nginx.user`          | :heavy_multiplication_x:       | `www-data`          |
 | `nginx.worker_processes`          | :heavy_multiplication_x:       | `auto`  |
 | `nginx.pid`          | :heavy_multiplication_x:       | `/run/nginx.pid`|
