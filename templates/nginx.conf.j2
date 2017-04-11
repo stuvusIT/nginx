@@ -36,7 +36,9 @@ http {
             index {% for item in served_domain.index %}
                 {{ item }}
             {% endfor %};
-
+            {% if served_domain.default_server %}
+                default_server {{ served_domain.default_server }};
+            {% endif %}
             {% if served_domain.https %}
                 listen 443;
                 ssl on;

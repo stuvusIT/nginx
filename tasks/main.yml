@@ -6,7 +6,7 @@
 - name: set nginx config
   template:
     src: templates/nginx.conf.j2
-    dest: /home/fritz/code/stuvus/nginx/nginx.conf
+    dest: /etc/nginx/nginx.conf
 - name: Enable and start nginx
   systemd:
     name: nginx.service
