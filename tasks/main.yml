@@ -2,6 +2,7 @@
 - name: Update repositories cache and install "nginx" package
   apt:
     name: nginx-full
+    update_cache: yes
   when: ansible_pkg_mgr == "apt"
 - name: set nginx config
   template:

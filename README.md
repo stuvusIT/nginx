@@ -57,21 +57,14 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 
 Configure a served_domain like 
 
-
-### Playbook
-
-```yml
-```
-
-
 ### Vars
 
 ```yml
-domain_suffixe:
+domain_suffixes:
   - stuvus.uni-stuttgart.de.
   - stuvus.de.
 
-domain_preffixe:
+domain_prefixes:
   - www
 served_domains:
   - domains: 
