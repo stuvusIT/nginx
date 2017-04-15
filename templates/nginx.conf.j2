@@ -58,8 +58,9 @@ http {
     {% for served_domain in served_domains %}
         server {
 
-            index {% for item in served_domain.index %}
-                {{ item }}
+            index 
+            {% for index_var in served_domain.index_files %}
+                {{ index_var }}
             {% endfor %};
             
             {% if served_domain.root is defined %}
