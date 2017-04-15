@@ -1,92 +1,103 @@
-{%- macro fix_domain(domain) -%}{#- remove leading and following dot -#}
-    {%- if domain[0] == '.' and domain[-1] == '.' -%}
-        {{- domain[1:-1] -}}
-    {%- elif domain[0] == '.' -%}
-        {{- domain[1:] -}}
-    {%- elif domain[-1] == '.' -%}
-        {{- domain[:-1] -}}
+{% macro fix_domain(domain) %}{#- remove leading and following dot -#}
+    {% if domain[0] == '.' and domain[-1] == '.' %}
+        {{ domain[1:-1] }}
+    {% elif domain[0] == '.' %}
+        {{ domain[1:] }}
+    {% elif domain[-1] == '.' %}
+        {{ domain[:-1] }}
     {% else %}
-        {{- domain -}}
-    {%- endif -%}
-{%- endmacro -%}
-{%- macro build_domain_list(domain, separator) -%}
-    {%- if domain[-1] == '.' -%}{#- domain is already a full qualified domain name -#}
+        {{ domain }}
+    {% endif %}
+{% endmacro %}
+{% macro build_domain_list(domain, separator) %}
+    {% if domain[-1] == '.' %}{#- domain is already a full qualified domain name -#}
         {#- output domain name with appended prefix and suffix, with given separator and without leading dot -#}
-        {{- separator -}}{{ domain[:-1] }}
-    {%- else -%}
-        {%- for prefix in domain_prefixes | default(['']) -%}{#- append all domain prefixes -#}
-            {%- for suffix in domain_suffixes | default(['']) -%}{#- append all domain suffixes -#}
+        {{ separator }}{{ domain[:-1] }}
+    {% else %}
+        {% for prefix in domain_prefixes | default(['']) %}{#- append all domain prefixes -#}
+            {% for suffix in domain_suffixes | default(['']) %}{#- append all domain suffixes -#}
             {#- output domain name with appended prefix and suffix, with given separator -#}
-                {{- separator -}}{{- fix_domain( [prefix,domain,suffix] | join('.') ) -}}
-            {%- endfor -%}
-        {%- endfor -%}
-    {%- endif -%}
-{%- endmacro -%}
+                {{ separator }}{{ fix_domain( [prefix,domain,suffix] | join('.') ) }}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
 
 
-user {{- nginx.user -}};
-worker_processes {{- nginx.worker_processes -}};
-pid {{- nginx.pid -}};
+user {{ nginx.user }};
+worker_processes {{ nginx.worker_processes }};
+pid {{ nginx.pid }};
 
 events {
-    worker_connections {{- nginx.worker_connections -}};
+    worker_connections {{ nginx.worker_connections }};
 }
 
 http {
-    sendfile {{- nginx.sendfile -}};
-    tcp_nopush {{- nginx.tcp_nopush -}};
-    tcp_nodelay {{- nginx.tcp_nodelay -}};
-    keepalive_timeout {{- nginx.keepalive_timeout -}};
-    types_hash_max_size {{- nginx.types_hash_max_size -}};
-    server_tokens {{- nginx.server_tokens -}};
+    sendfile {{ nginx.sendfile }};
+    tcp_nopush {{ nginx.tcp_nopush }};
+    tcp_nodelay {{ nginx.tcp_nodelay }};
+    keepalive_timeout {{ nginx.keepalive_timeout }};
+    types_hash_max_size {{ nginx.types_hash_max_size }};
+    server_tokens {{ nginx.server_tokens }};
     
     include /etc/nginx/mime.types;
-    default_type {{- nginx.default_type -}};
+    default_type {{ nginx.default_type }};
 
-    ssl_protocols {{- nginx.ssl_protocols -}};
-    ssl_ciphers {{- nginx.ssl_ciphers -}};
-    ssl_prefer_server_ciphers {{- nginx.ssl_prefer_server_ciphers -}};
+    ssl_protocols {{ nginx.ssl_protocols }};
+    ssl_ciphers {{ nginx.ssl_ciphers }};
+    ssl_prefer_server_ciphers {{ nginx.ssl_prefer_server_ciphers }};
 
-    log_format {{- nginx.log_format -}};
+    log_format {{ nginx.log_format }};
 
-    access_log {{- nginx.access_log -}};
-    error_log {{- nginx.error_log -}};
+    access_log {{ nginx.access_log }};
+    error_log {{ nginx.error_log }};
 
-    gzip {{- nginx.gzip -}};
-    gzip_disable {{- nginx.gzip_disable -}};
-    gzip_types {{- nginx.gzip_types -}};
-    {%- for served_domain in served_domains -%}
+    gzip {{ nginx.gzip }};
+    gzip_disable {{ nginx.gzip_disable }};
+    gzip_types {{ nginx.gzip_types }};
+    {% for served_domain in served_domains %}
         server {
 
-            index {%- for item in served_domain.index -%}
-                {{- item -}}
-            {%- endfor -%};
-            {%- if served_domain.default_server -%}
-                default_server {{- served_domain.default_server -}};
-            {%- endif -%}
-            {%- if served_domain.https -%}
-                listen 443;
-                ssl on;
-                ssl_certificate     {{- served_domain.fullchain_path -}};
-                ssl_certificate_key {{- served_domain.privkey_path -}};
+            index {% for item in served_domain.index %}
+                {{ item }}
+            {% endfor %};
+            
+            {% if served_domain.root is defined %}
+                root {{ served_domain.root }};
+            {% endif %}
 
-            {%- else -%}
-                listen 80;
-            {%- endif -%} 
+            {% if served_domain.https %}
+                listen 443
+
+                {% if served_domain.default_server %}
+                default_server
+                {% endif %};
+                ssl on;
+                ssl_certificate     {{ served_domain.fullchain_path }};
+                ssl_certificate_key {{ served_domain.privkey_path }};
+
+            {% else %}
+                listen 80
+
+                {% if served_domain.default_server %}
+                default_server
+                {% endif %};
+            {% endif %} 
             server_name 
-            {%- for domain in served_domain.domains -%}
-                {{- build_domain_list( domain, ' ' ) -}}
-            {%- endfor -%}
-            {%- for location_var in served_domain.locations -%}
+            {% for domain in served_domain.domains %}
+                {{ build_domain_list( domain, ' ' ) }}
+            {% endfor %};
+            {% for location_var in served_domain.locations %}
                 location {{location_var.condition}} {
-                    {%- for ip_range in served_domain.allowed_ip_ranges %}
-                        allow {{- ip_range -}};
-                        deny all;
-                    {%- endfor -%}
-                    {{- location_var.content -}}
+                    {% for ip_range in served_domain.allowed_ip_ranges %}
+                        allow {{ ip_range }};
+                    {% endfor %}
+                    deny all;
+                    {{ location_var.content }}
                 }
 
-            {%- endfor -%}
-    {%- endfor -%}
+            {% endfor %}
+    {% endfor %}
     
+}
 }
