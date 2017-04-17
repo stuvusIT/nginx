@@ -1,14 +1,21 @@
 ---
-- name: Update repositories cache and install "nginx" package
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+  changed_when: false
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install "nginx" package
   apt:
     name: nginx-full
-    update_cache: yes
   when: ansible_pkg_mgr == "apt"
+  
 - name: set nginx config
   template:
     src: templates/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
   register: nginx_reload
+  
 - name: Enable and start nginx
   systemd:
     name: nginx.service
