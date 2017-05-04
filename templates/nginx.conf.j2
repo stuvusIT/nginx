@@ -70,8 +70,7 @@ http {
             listen 80 {% if served_domain.default_server %} default_server{% endif %};
             {% endif %} 
             server_name{% for domain in served_domain.domains %} {{ build_domain_list( domain, ' ' ) -}}{% endfor %};
-
-
+            
             {% for location_var in served_domain.locations -%}
             location {{location_var.condition}} {
                 {% for ip_range in served_domain.allowed_ip_ranges %}
@@ -81,7 +80,6 @@ http {
 
                 {{ location_var.content }}
             }
-
             {% endfor %}
     {% endfor %}
     
