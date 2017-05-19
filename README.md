@@ -50,6 +50,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `served_domains.index`          | :heavy_check_mark:       |          | For which index files should nginx look|
 | `served_domains.locations.condition`          | :heavy_check_mark:       |          | The condition under which this locations block is called|
 | `served_domains.locations.content`          | :heavy_check_mark:       |          | Content of the locations block|
+| `served_domains.locations.ignore_access`          | :heavy_multiplication_x:       |          | Ignore the default acces behaviour|
 
 
 

@@ -74,10 +74,13 @@ http {
 
             {% for location_var in served_domain.locations -%}
             location {{location_var.condition}} {
-                {% for ip_range in served_domain.allowed_ip_ranges %}
-                allow {{ ip_range }};
-                {% endfor %}
-                deny all;
+                {% if location_var.ignore_access %}
+                    {% for ip_range in served_domain.allowed_ip_ranges %}
+                    allow {{ ip_range }};
+                    {% endfor %}
+                    deny all;
+                {% endif %}
+                
 
                 {{ location_var.content }}
             }
