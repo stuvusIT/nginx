@@ -14,26 +14,26 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 
 | Name                      | Required                 | Default        | 
 |---------------------------|:------------------------:|---------------|
-| `nginx.user`          | :heavy_multiplication_x:       | `www-data`          |
-| `nginx.worker_processes`          | :heavy_multiplication_x:       | `auto`  |
-| `nginx.pid`          | :heavy_multiplication_x:       | `/run/nginx.pid`|
-| `nginx.worker_connections`          | :heavy_multiplication_x:       | `768` |
-| `nginx.sendfile`          | :heavy_multiplication_x:       | `on` |
-| `nginx.tcp_nopush`          | :heavy_multiplication_x:       | `on`          |
-| `nginx.tcp_nodelay`          | :heavy_multiplication_x:       | `on`         |
-| `nginx.keepalive_timeout`          | :heavy_multiplication_x:       | `65`|
-| `nginx.types_hash_max_size`          | :heavy_multiplication_x:       | `2048`|
-| `nginx.server_tokens`          | :heavy_multiplication_x:       | `off`|
-| `nginx.default_type`          | :heavy_multiplication_x:       | `application/octet-stream`|
-| `nginx.ssl_protocols`          | :heavy_multiplication_x:       | `TLSv1 TLSv1.1 TLSv1.2`|
-| `nginx.ssl_ciphers`          | :heavy_multiplication_x:       | `EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH`|
-| `nginx.ssl_prefer_server_ciphers`          | :heavy_multiplication_x:       | `on`|
-| `nginx.log_format`          | :heavy_multiplication_x:       | See defaults|
-| `nginx.access_log`          | :heavy_multiplication_x:       | `/var/log/nginx/access.log`|
-| `nginx.error_log`          | :heavy_multiplication_x:       | `/var/log/nginx/error.log`|
-| `nginx.gzip`          | :heavy_multiplication_x:       | `on`|
-| `nginx.gzip_disable`          | :heavy_multiplication_x:       | `msie6`|
-| `nginx.gzip_types`          | :heavy_multiplication_x:       | See defaults.|
+| `nginx_user`          | :heavy_multiplication_x:       | `www-data`          |
+| `nginx_worker_processes`          | :heavy_multiplication_x:       | `auto`  |
+| `nginx_pid`          | :heavy_multiplication_x:       | `/run/nginx_pid`|
+| `nginx_worker_connections`          | :heavy_multiplication_x:       | `768` |
+| `nginx_sendfile`          | :heavy_multiplication_x:       | `on` |
+| `nginx_tcp_nopush`          | :heavy_multiplication_x:       | `on`          |
+| `nginx_tcp_nodelay`          | :heavy_multiplication_x:       | `on`         |
+| `nginx_keepalive_timeout`          | :heavy_multiplication_x:       | `65`|
+| `nginx_types_hash_max_size`          | :heavy_multiplication_x:       | `2048`|
+| `nginx_server_tokens`          | :heavy_multiplication_x:       | `off`|
+| `nginx_default_type`          | :heavy_multiplication_x:       | `application/octet-stream`|
+| `nginx_ssl_protocols`          | :heavy_multiplication_x:       | `TLSv1 TLSv1.1 TLSv1.2`|
+| `nginx_ssl_ciphers`          | :heavy_multiplication_x:       | `EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH`|
+| `nginx_ssl_prefer_server_ciphers`          | :heavy_multiplication_x:       | `on`|
+| `nginx_log_format`          | :heavy_multiplication_x:       | See defaults|
+| `nginx_access_log`          | :heavy_multiplication_x:       | `/var/log/nginx/access.log`|
+| `nginx_error_log`          | :heavy_multiplication_x:       | `/var/log/nginx/error.log`|
+| `nginx_gzip`          | :heavy_multiplication_x:       | `on`|
+| `nginx_gzip_disable`          | :heavy_multiplication_x:       | `msie6`|
+| `nginx_gzip_types`          | :heavy_multiplication_x:       | See defaults.|
 
 ### Domain Vars
 | Name                      | Required                 | Default         | Description                                                                     |
@@ -51,6 +51,15 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `served_domains.locations.condition`          | :heavy_check_mark:       |          | The condition under which this locations block is called|
 | `served_domains.locations.content`          | :heavy_check_mark:       |          | Content of the locations block|
 | `served_domains.locations.ignore_access`          | :heavy_multiplication_x:       |          | Ignore the default acces behaviour|
+| `served_domains.fastcgi_buffers`          | :heavy_multiplication_x:       |          | |
+| `served_domains.client_max_body_size`          | :heavy_multiplication_x:       |          | File Upload size|
+| `served_domains.headers`          | :heavy_multiplication_x:       |          | List of headers that should be used for this server block|
+
+### Upstream Vars
+| Name                      | Required                 | Default         | Description                                                                     |
+|---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
+| `upstream.name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
+| `upstream.path`          | :heavy_check_mark:       |          | url or socket to php listener|
 
 
 
@@ -77,7 +86,7 @@ served_domains:
     allowed_ip_ranges:
       - 172.27.10.0/24
     https: true
-    index:
+    index_files:
       - index.php
       - index.html
     locations:
