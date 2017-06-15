@@ -15,6 +15,7 @@ nginx_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
 nginx_ssl_ciphers: 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH'
 nginx_ssl_prefer_server_ciphers: "on"
 nginx_log_format: |
+
         ext_combined
         '[$time_iso8601] >>$upstream_addr <<$remote_addr - '
         '$status $request_method $scheme://$host$request_uri '
