@@ -16,7 +16,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 |---------------------------|:------------------------:|---------------|
 | `nginx_user`          | :heavy_multiplication_x:       | `www-data`          |
 | `nginx_worker_processes`          | :heavy_multiplication_x:       | `auto`  |
-| `nginx_pid`          | :heavy_multiplication_x:       | `/run/nginx_pid`|
+| `nginx_pid`          | :heavy_multiplication_x:       | `/run/nginx.:pid`|
 | `nginx_worker_connections`          | :heavy_multiplication_x:       | `768` |
 | `nginx_sendfile`          | :heavy_multiplication_x:       | `on` |
 | `nginx_tcp_nopush`          | :heavy_multiplication_x:       | `on`          |

@@ -55,16 +55,20 @@ http {
     gzip {{ nginx_gzip -}};
     gzip_disable {{ nginx_gzip_disable -}};
     gzip_types {{ nginx_gzip_types -}};
-
+    {% if global is defined %}
     {% for global_var in global -%}
         {{ global_var.content }}
-    }
-
+    {% endfor %}    
+    {% endif %}
+    
     {% for served_domain in served_domains %}
         server {
-            {% for header in served_domain.headers %}
-                add_header {{ header }};
-            {% endfor %}
+            {% if served_domain.headers is defined %}
+                {% for header in served_domain.headers %}
+                    add_header {{ header }};
+                {% endfor %}
+            {% endif %}
+            
 
 
             index{% for index_var in served_domain.index_files %} {{ index_var }}{% endfor -%};
@@ -79,10 +83,10 @@ http {
             {%- else -%}
             listen 80 {% if served_domain.default_server %} default_server{% endif %};
             {% endif %} 
-            {% if served_domain.domains | length = 0  %}
-                server_name _;
-            {% else %}
+            {% if served_domain.domains|length > 0  %}
                 server_name {% for domain in served_domain.domains %} {{ build_domain_list( domain, ' ' ) -}}{% endfor %};
+            {% else %}
+                server_name _;
             {% endif %}
             
 
@@ -120,9 +124,12 @@ http {
     {% endfor %}
     
     }
+    {% if upstreams is defined %}
     {% for upstream in upstreams %}
     upstream {{upstream.name}} {
         server {{upstream.path}};
     }
-    {% endfor %}
+    {% endfor %}  
+    {% endif %}
+    
 }
