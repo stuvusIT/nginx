@@ -55,6 +55,11 @@ http {
     gzip {{ nginx_gzip -}};
     gzip_disable {{ nginx_gzip_disable -}};
     gzip_types {{ nginx_gzip_types -}};
+
+    {% for global_var in global -%}
+        {{ global_var.content }}
+    }
+
     {% for served_domain in served_domains %}
         server {
             {% for header in served_domain.headers %}
@@ -65,16 +70,21 @@ http {
             index{% for index_var in served_domain.index_files %} {{ index_var }}{% endfor -%};
             {% if served_domain.root is defined -%}
             root {{ served_domain.root }};
-            {% endif %}
-            {% if served_domain.https -%}
-            listen 443 {% if served_domain.default_server %} default_server {% endif %};
+            {% endif -%}
+            {%- if served_domain.https -%}
+            listen 443 {%- if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif -%}{%- if served_domain.default_server %} default_server {% endif -%};
             ssl on;
             ssl_certificate     {{ served_domain.fullchain_path }};
             ssl_certificate_key {{ served_domain.privkey_path }};
             {%- else -%}
             listen 80 {% if served_domain.default_server %} default_server{% endif %};
             {% endif %} 
-            server_name{% for domain in served_domain.domains %} {{ build_domain_list( domain, ' ' ) -}}{% endfor %};
+            {% if served_domain.domains | length = 0  %}
+                server_name _;
+            {% else %}
+                server_name {% for domain in served_domain.domains %} {{ build_domain_list( domain, ' ' ) -}}{% endfor %};
+            {% endif %}
+            
 
             {% if served_domain.client_max_body_size is defined %}
             client_max_body_size {{served_domain.client_max_body_size}}
@@ -82,6 +92,12 @@ http {
 
             {% if served_domain.fastcgi_buffers is defined %}
             fastcgi_buffers {{served_domain.fastcgi_buffers}}
+            {% endif %}
+
+            {% if served_domain.configurations is defined%}
+                {% for configuration in served_domain.configurations %}
+                    {{ configuration.content }}
+                {% endfor %}
             {% endif %}
             
 
@@ -97,6 +113,8 @@ http {
 
                 {{ location_var.content }}
             }
+
+
 
             {% endfor %}
     {% endfor %}

@@ -38,7 +38,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 ### Domain Vars
 | Name                      | Required                 | Default         | Description                                                                     |
 |---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
-| `domain_suffixe`          | :heavy_check_mark:       |          | Domain suffixe to support multiple domain endings like ticket.test.de. and ticket.test.com.|
+| `domain_suffixes`          | :heavy_check_mark:       |          | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com.|
 | `domain_preffixe`          | :heavy_check_mark:       |          | Domain preffixe like www |
 | `served_domains`          | :heavy_check_mark:       |          | A list of the served domains|
 | `served_domains.domains`          | :heavy_check_mark:       |          | A list of server names if you do not enter a fully qualifed name like test.de. the server will append all combinations with the given preffixes|
@@ -73,6 +73,10 @@ Configure a served_domain like
 domain_suffixes:
   - stuvus.uni-stuttgart.de.
   - stuvus.de.
+global:
+  - content:
+    |
+    <content goes here>;
 
 domain_prefixes:
   - www
@@ -89,6 +93,11 @@ served_domains:
     index_files:
       - index.php
       - index.html
+    enable_http2: true
+    configurations:
+      - content:
+        |
+        <content goes here>;
     locations:
       - condition: /
         content:
