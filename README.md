@@ -16,7 +16,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 |---------------------------|:------------------------:|---------------|
 | `nginx_user`          | :heavy_multiplication_x:       | `www-data`          |
 | `nginx_worker_processes`          | :heavy_multiplication_x:       | `auto`  |
-| `nginx_pid`          | :heavy_multiplication_x:       | `/run/nginx.:pid`|
+| `nginx_pid`          | :heavy_multiplication_x:       | `/run/nginx.pid`|
 | `nginx_worker_connections`          | :heavy_multiplication_x:       | `768` |
 | `nginx_sendfile`          | :heavy_multiplication_x:       | `on` |
 | `nginx_tcp_nopush`          | :heavy_multiplication_x:       | `on`          |
@@ -50,7 +50,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `served_domains.index`          | :heavy_check_mark:       |          | For which index files should nginx look|
 | `served_domains.locations.condition`          | :heavy_check_mark:       |          | The condition under which this locations block is called|
 | `served_domains.locations.content`          | :heavy_check_mark:       |          | Content of the locations block|
-| `served_domains.locations.ignore_access`          | :heavy_multiplication_x:       |          | Ignore the default acces behaviour|
+| `served_domains.locations.ignore_access`          | :heavy_multiplication_x:       |          | Ignore the default access behaviour|
 | `served_domains.fastcgi_buffers`          | :heavy_multiplication_x:       |          | |
 | `served_domains.client_max_body_size`          | :heavy_multiplication_x:       |          | File Upload size|
 | `served_domains.headers`          | :heavy_multiplication_x:       |          | List of headers that should be used for this server block|
