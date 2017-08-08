@@ -103,7 +103,7 @@ http {
                 {% endfor %}
             {% endif %}
             
-
+            {% if served_domain.locations is defined %}
             {% for location_var in served_domain.locations -%}
             location {{location_var.condition}} {
                 {% if location_var.ignore_access is defined %}
@@ -116,7 +116,7 @@ http {
 
                 {{ location_var.content }}
             }
-
+            {%endif%}
 
 
             {% endfor %}
