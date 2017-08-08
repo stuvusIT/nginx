@@ -116,13 +116,12 @@ http {
 
                 {{ location_var.content }}
             }
-            {%endif%}
-
-
             {% endfor %}
+            {% endif %}
+        }
     {% endfor %}
     
-    }
+    
     {% if upstreams is defined %}
     {% for upstream in upstreams %}
     upstream {{upstream.name}} {
