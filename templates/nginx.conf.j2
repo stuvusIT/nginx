@@ -69,7 +69,7 @@ http {
                 {% endfor %}
             {% endif %}
             
-
+ 
 
             index{% for index_var in served_domain.index_files %} {{ index_var }}{% endfor -%};
             {% if served_domain.root is defined -%}
@@ -104,8 +104,8 @@ http {
                 {% endfor %}
             {% endif %}
             
-            {% if served_domain.locations is defined %}
-            {% for location_var in served_domain.locations -%}
+            
+            {% for location_var in served_domain.locations | default([]) -%}
             location {{location_var.condition}} {
                 {% if location_var.ignore_access is defined %}
                     {% for ip_range in served_domain.allowed_ip_ranges %}
@@ -118,7 +118,7 @@ http {
                 {{ location_var.content }}
             }
             {% endfor %}
-            {% endif %}
+            
         }
     {% endfor %}
     
