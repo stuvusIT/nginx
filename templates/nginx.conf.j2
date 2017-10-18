@@ -91,7 +91,7 @@ http {
             
 
             {% if served_domain.client_max_body_size is defined %}
-            client_max_body_size {{served_domain.client_max_body_size}}
+            client_max_body_size {{served_domain.client_max_body_size}};
             {% endif %}
 
             {% if served_domain.fastcgi_buffers is defined %}
