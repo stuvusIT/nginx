@@ -136,7 +136,7 @@ served_domains:
 
 ### Result
 
-A running nginx with specificed config
+A running nginx with specified config
 
 
 ## License
