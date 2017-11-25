@@ -61,7 +61,16 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `upstream.name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
 | `upstream.path`          | :heavy_check_mark:       |          | url or socket to php listener|
 
+### Maps
+| Name                      | Required                 | Default         | Description                                                                     |
+|---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
+| `upstream.name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
+| `upstream.path`          | :heavy_check_mark:       |          | url or socket to php listener|
 
+### Global Vars
+| Name                      | Required                 | Default         | Description                                                                     |
+|---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
+| `global_var.content`          | :heavy_check_mark:       |          | content of the line that should be set|
 
 ## Example Playbook
 
@@ -73,10 +82,17 @@ Configure a served_domain like
 domain_suffixes:
   - stuvus.uni-stuttgart.de.
   - stuvus.de.
-global:
+nginx_global:
   - content:
     |
     <content goes here>;
+nginx_upstreams:
+  - name: "server"
+    path: 127.0.0.1:8080
+nginx_maps:
+  - condition: <condition>
+    content: |
+      <content goes here>
 
 domain_prefixes:
   - www
