@@ -55,6 +55,10 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `served_domains.client_max_body_size`          | :heavy_multiplication_x:       |          | File Upload size|
 | `served_domains.headers`          | :heavy_multiplication_x:       |          | List of headers that should be used for this server block|
 
+## Global Values
+upstream, maps, and global vars are to be defined by using either
+nginx_upstreams, nginx_maps, nginx_global lists the objects for each list are defined below.
+
 ### Upstream Vars
 | Name                      | Required                 | Default         | Description                                                                     |
 |---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
@@ -64,8 +68,8 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 ### Maps
 | Name                      | Required                 | Default         | Description                                                                     |
 |---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
-| `upstream.name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
-| `upstream.path`          | :heavy_check_mark:       |          | url or socket to php listener|
+| `map.condition`          | :heavy_check_mark:       |          | Map condition used in domain_vars|
+| `map.content`          | :heavy_check_mark:       |          | map content|
 
 ### Global Vars
 | Name                      | Required                 | Default         | Description                                                                     |
