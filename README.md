@@ -57,13 +57,8 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 
 ## Global Values
 upstream, maps, and global vars are to be defined by using either
-`nginx_upstreams`, `nginx_maps`, `nginx_global` lists the objects for each list are defined below.
-Example:
-```yml
-nginx_upstreams:
-  - name: "server"
-    path: 127.0.0.1:8080`
-```
+`nginx_upstreams`, `nginx_maps`, `nginx_global`.
+
 ### Upstream Vars
 `nginx_upstreams` is a list of dicts containing the following two entries.
 | Name                      | Required                 | Default         | Description                                                                     |
