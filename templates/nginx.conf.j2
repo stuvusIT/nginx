@@ -1,27 +1,27 @@
 {% macro fix_domain(domain) %}{#- remove leading and following dot -#}
-    {% if domain[0] == '.' and domain[-1] == '.' %}
+    {%- if domain[0] == '.' and domain[-1] == '.' -%}
         {{ domain[1:-1] }}
-    {% elif domain[0] == '.' %}
+    {%- elif domain[0] == '.' -%}
         {{ domain[1:] }}
-    {% elif domain[-1] == '.' %}
+    {%- elif domain[-1] == '.' -%}
         {{ domain[:-1] }}
-    {% else %}
+    {%- else -%}
         {{ domain }}
-    {% endif %}
-{% endmacro %}
+    {%- endif %}
+{%- endmacro %}
 {% macro build_domain_list(domain, separator) %}
-    {% if domain[-1] == '.' %}{#- domain is already a full qualified domain name -#}
+    {%- if domain[-1] == '.' -%}{#- domain is already a full qualified domain name -#}
         {#- output domain name with appended prefix and suffix, with given separator and without leading dot -#}
-        {{ separator }}{{ domain[:-1] }}
-    {% else %}
-        {%- for prefix in domain_prefixes | default(['']) -%}{#- append all domain prefixes -#}
+        {{- separator }}{{ domain[:-1] -}}
+    {%- else -%}
+        {% for prefix in domain_prefixes | default(['']) -%}{#- append all domain prefixes -#}
             {%- for suffix in domain_suffixes | default(['']) -%}{#- append all domain suffixes -#}
-            {#- output domain name with appended prefix and suffix, with given separator -#}
-                {{- separator -}}{{- fix_domain( [prefix,domain,suffix] | join('.') ) -}}
-            {%- endfor -%}
-        {%- endfor -%}
-    {% endif %}
-{% endmacro %}
+                {#- output domain name with appended prefix and suffix, with given separator -#}
+                {{- separator }}{{ fix_domain( [prefix,domain,suffix] | join('.') ) -}}
+            {%- endfor %}
+        {%- endfor %}
+    {%- endif -%}
+{% endmacro -%}
 
 user {{ nginx_user }};
 worker_processes {{ nginx_worker_processes }};
@@ -38,8 +38,7 @@ http {
     keepalive_timeout {{ nginx_keepalive_timeout -}};
     types_hash_max_size {{ nginx_types_hash_max_size -}};
     server_tokens {{ nginx_server_tokens -}};
-    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size -}};
-    
+    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size }};
     include /etc/nginx/mime.types;
     default_type {{ nginx_default_type -}};
 
@@ -47,7 +46,7 @@ http {
     ssl_ciphers {{ nginx_ssl_ciphers -}};
     ssl_prefer_server_ciphers {{ nginx_ssl_prefer_server_ciphers -}};
 
-    log_format {{ nginx_log_format -}};
+    log_format {{ nginx_log_format }};
 
     access_log {{ nginx_access_log -}};
     error_log {{ nginx_error_log -}};
@@ -55,80 +54,73 @@ http {
     gzip {{ nginx_gzip -}};
     gzip_disable {{ nginx_gzip_disable -}};
     gzip_types {{ nginx_gzip_types -}};
-    {% if global is defined %}
-    {% for global_var in global -%}
+    {% if nginx_global is defined %}
+    {% for global_var in nginx_global %}
         {{ global_var.content }}
-    {% endfor %}    
-    {% endif %}
-    
-    {% for served_domain in served_domains %}
-        server {
-            {% if served_domain.headers is defined %}
-                {% for header in served_domain.headers %}
-                    add_header {{ header }};
-                {% endfor %}
-            {% endif %}
-            
- 
-
-            index{% for index_var in served_domain.index_files %} {{ index_var }}{% endfor -%};
-            {% if served_domain.root is defined -%}
-            root {{ served_domain.root }};
-            {% endif -%}
-            {%- if served_domain.https -%}
-            listen 443 {%- if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif -%}{%- if served_domain.default_server %} default_server {% endif -%};
-            ssl on;
-            ssl_certificate     {{ served_domain.fullchain_path }};
-            ssl_certificate_key {{ served_domain.privkey_path }};
-            {%- else -%}
-            listen 80 {% if served_domain.default_server %} default_server{% endif %};
-            {% endif %} 
-            {% if served_domain.domains|length > 0  %}
-                server_name {% for domain in served_domain.domains %} {{ build_domain_list( domain, ' ' ) -}}{% endfor %};
-            {% else %}
-                server_name _;
-            {% endif %}
-            
-
-            {% if served_domain.client_max_body_size is defined %}
-            client_max_body_size {{served_domain.client_max_body_size}};
-            {% endif %}
-
-            {% if served_domain.fastcgi_buffers is defined %}
-            fastcgi_buffers {{served_domain.fastcgi_buffers}}
-            {% endif %}
-
-            {% if served_domain.configurations is defined%}
-                {% for configuration in served_domain.configurations %}
-                    {{ configuration.content }}
-                {% endfor %}
-            {% endif %}
-            
-            
-            {% for location_var in served_domain.locations | default([]) -%}
-            location {{location_var.condition}} {
-                {% if location_var.ignore_access is defined %}
-                    {% for ip_range in served_domain.allowed_ip_ranges %}
-                    allow {{ ip_range }};
-                    {% endfor %}
-                    deny all;
-                {% endif %}
-                
-
-                {{ location_var.content }}
-            }
-            {% endfor %}
-            
-        }
     {% endfor %}
-    
-    
-    {% if upstreams is defined %}
-    {% for upstream in upstreams %}
-    upstream {{upstream.name}} {
-        server {{upstream.path}};
-    }
-    {% endfor %}  
     {% endif %}
-    
+    {% for served_domain in served_domains -%}
+    server {
+        {% for header in served_domain.headers | default([]) %}
+        add_header {{ header }};
+        {% endfor %}
+        {%- if served_domain.return is defined -%}
+        return {{ served_domain.return }};
+        {%- endif %}
+        {%- if served_domain.index_files is defined -%}
+        index{% for index_var in served_domain.index_files %} {{ index_var }}{% endfor %};
+        {% endif %}
+        {%- if served_domain.root is defined -%}
+        root {{ served_domain.root }};
+        {% endif %}
+        {%- if served_domain.https -%}
+        listen 443{% if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif %}{% if served_domain.default_server %} default_server {% endif %};
+        ssl on;
+        ssl_certificate     {{ served_domain.fullchain_path }};
+        ssl_certificate_key {{ served_domain.privkey_path }};
+        {% else -%}
+        listen 80 {% if served_domain.default_server %} default_server{% endif %};
+        {% endif -%}
+        server_name
+        {%- if served_domain.domains|length > 0  -%}
+            {%- for domain in served_domain.domains -%}
+                {{- build_domain_list( domain, ' ' ) -}}
+            {%- endfor -%};
+        {% else %}
+            _;
+        {%- endif %}
+        {%- if served_domain.client_max_body_size is defined -%}
+            client_max_body_size {{ served_domain.client_max_body_size }}
+        {%- endif %}
+        {%- if served_domain.fastcgi_buffers is defined -%}
+            fastcgi_buffers {{ served_domain.fastcgi_buffers }}
+        {%- endif %}
+        {%- for configuration in served_domain.configurations | default([]) %}
+            {{ configuration.content }}
+        {%- endfor %}
+        {%- for location_var in served_domain.locations | default([]) -%}
+        location {{ location_var.condition }} {
+            {%- if location_var.ignore_access is defined -%}
+                {%- for ip_range in served_domain.allowed_ip_ranges -%}
+                allow {{ ip_range }};
+                {%- endfor %}
+                deny all;
+            {%- endif %}
+            {{ location_var.content }}
+        }
+    {% endfor -%}
+    }
+
+    {% endfor %}
+
+    {% for upstream in nginx_upstreams | default([]) %}
+    upstream {{ upstream.name }} {
+        server {{ upstream.path }};
+    }
+    {% endfor %}
+    {% for map in nginx_maps | default([]) %}
+    map {{ map.condition }} {
+        {{ map.content }};
+    }
+    {% endfor %}
 }

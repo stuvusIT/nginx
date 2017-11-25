@@ -55,13 +55,29 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `served_domains.client_max_body_size`          | :heavy_multiplication_x:       |          | File Upload size|
 | `served_domains.headers`          | :heavy_multiplication_x:       |          | List of headers that should be used for this server block|
 
+## Global Values
+upstream, maps, and global vars are to be defined by using either
+`nginx_upstreams`, `nginx_maps`, `nginx_global`.
+
 ### Upstream Vars
+`nginx_upstreams` is a list of dicts containing the following two entries.
 | Name                      | Required                 | Default         | Description                                                                     |
 |---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
-| `upstream.name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
-| `upstream.path`          | :heavy_check_mark:       |          | url or socket to php listener|
+| `name`          | :heavy_check_mark:       |          | Upstream name used in domain_vars|
+| `path`          | :heavy_check_mark:       |          | url or socket to php listener|
 
+### Maps
+`nginx_maps` is a list of dicts containing the following two entries.
+| Name                      | Required                 | Default         | Description                                                                     |
+|---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
+| `condition`          | :heavy_check_mark:       |          | Map condition used in domain_vars|
+| `content`          | :heavy_check_mark:       |          | map content|
 
+### Global Vars
+`nginx_global` is a list of dicts containing the following entry.
+| Name                      | Required                 | Default         | Description                                                                     |
+|---------------------------|:------------------------:|-----------------|---------------------------------------------------------------------------------|
+| `content`          | :heavy_check_mark:       |          | content of the line that should be set|
 
 ## Example Playbook
 
@@ -73,10 +89,17 @@ Configure a served_domain like
 domain_suffixes:
   - stuvus.uni-stuttgart.de.
   - stuvus.de.
-global:
+nginx_global:
   - content:
     |
     <content goes here>;
+nginx_upstreams:
+  - name: "server"
+    path: 127.0.0.1:8080
+nginx_maps:
+  - condition: <condition>
+    content: |
+      <content goes here>
 
 domain_prefixes:
   - www
