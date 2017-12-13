@@ -1,0 +1,3 @@
+{% for rule in nginx_pam_rules %}
+{{ rule.type }} {{ rule.control }} {{ rule.module_path }}
+{% endfor %}

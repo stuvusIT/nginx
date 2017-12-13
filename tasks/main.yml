@@ -10,11 +10,17 @@
     name: nginx-full
   when: ansible_pkg_mgr == "apt"
   
-- name: set nginx config
+- name: Set nginx config
   template:
     src: templates/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
   register: nginx_reload
+
+- name: Place template pam nginx file
+  template:
+    src: "templates/pam_service_file.j2"
+    dest: "/etc/pam.d/{{ nginx_pam_service_name }}"
+  when: nginx_pam_rules is defined
 
 - name: Enable and start nginx
   systemd:
