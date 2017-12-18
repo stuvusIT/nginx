@@ -19,7 +19,7 @@
 - name: Place template pam nginx file
   template:
     src: templates/pam_service_file.j2
-    dest: "/etc/pam.d/{{ nginx_pam_service_name }}"
+    dest: "/etc/pam.d/{{ nginx_pam_service_name | mandatory }}"
   when: nginx_pam_rules is defined
 
 - name: Enable and start nginx
