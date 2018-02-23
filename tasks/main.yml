@@ -9,7 +9,7 @@
   apt:
     name: nginx-full
   when: ansible_pkg_mgr == "apt"
-  
+
 - name: Set nginx config
   template:
     src: templates/nginx.conf.j2
@@ -28,4 +28,3 @@
     state: reloaded
     enabled: True
   when: ansible_service_mgr == "systemd" and nginx_reload.changed
-

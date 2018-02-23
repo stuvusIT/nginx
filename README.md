@@ -38,24 +38,25 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `nginx_pam_service_name`          | :heavy_multiplication_x: | Name of the pam service that should ne created. Mandatory when setting `nginx_pam_rules`          |
 
 ### Domain Vars
-| Name                                     |         Required         | Default | Description                                                                                                                                     |
+| Name                                     | Required                 | Default | Description                                                                                                                                     |
 |:-----------------------------------------|:------------------------:|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------|
-| `domain_suffixes`                        |    :heavy_check_mark:    |         | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com.                                                    |
-| `domain_preffixe`                        |    :heavy_check_mark:    |         | Domain preffixe like www                                                                                                                        |
-| `served_domains`                         |    :heavy_check_mark:    |         | A list of the served domains                                                                                                                    |
-| `served_domains.domains`                 |    :heavy_check_mark:    |         | A list of server names if you do not enter a fully qualifed name like test.de. the server will append all combinations with the given preffixes |
-| `served_domains.privkey_path`            |    :heavy_check_mark:    |         | The path to a privet key for the https cert                                                                                                     |
-| `served_domains.fullchain_path`          |    :heavy_check_mark:    |         | The path to a cert for https                                                                                                                    |
-| `served_domains.default_server`          |    :heavy_check_mark:    |         | Should this server be the default server to awnser request                                                                                      |
+| `domain_suffixes`                        | :heavy_check_mark:       |         | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com.                                                    |
+| `domain_preffixe`                        | :heavy_check_mark:       |         | Domain preffixe like www                                                                                                                        |
+| `served_domains`                         | :heavy_check_mark:       |         | A list of the served domains                                                                                                                    |
+| `served_domains.domains`                 | :heavy_check_mark:       |         | A list of server names if you do not enter a fully qualifed name like test.de. the server will append all combinations with the given preffixes |
+| `served_domains.privkey_path`            | :heavy_check_mark:       |         | The path to a privet key for the https cert                                                                                                     |
+| `served_domains.fullchain_path`          | :heavy_check_mark:       |         | The path to a cert for https                                                                                                                    |
+| `served_domains.default_server`          | :heavy_check_mark:       |         | Should this server be the default server to awnser request                                                                                      |
 | `served_domains.allowed_ip_ranges`       | :heavy_multiplication_x: | all     | IP ranges that are allowed to access this server by default are all ips allowed                                                                 |
-| `served_domains.https`                   |    :heavy_check_mark:    |         | Should this domain use https                                                                                                                    |
-| `served_domains.index`                   |    :heavy_check_mark:    |         | For which index files should nginx look                                                                                                         |
-| `served_domains.locations.condition`     |    :heavy_check_mark:    |         | The condition under which this locations block is called                                                                                        |
-| `served_domains.locations.content`       |    :heavy_check_mark:    |         | Content of the locations block                                                                                                                  |
+| `served_domains.https`                   | :heavy_check_mark:       |         | Should this domain use https                                                                                                                    |
+| `served_domains.index`                   | :heavy_check_mark:       |         | For which index files should nginx look                                                                                                         |
+| `served_domains.locations.condition`     | :heavy_check_mark:       |         | The condition under which this locations block is called                                                                                        |
+| `served_domains.locations.content`       | :heavy_check_mark:       |         | Content of the locations block                                                                                                                  |
 | `served_domains.locations.ignore_access` | :heavy_multiplication_x: |         | Ignore the default access behaviour                                                                                                             |
 | `served_domains.fastcgi_buffers`         | :heavy_multiplication_x: |         |                                                                                                                                                 |
 | `served_domains.client_max_body_size`    | :heavy_multiplication_x: |         | File Upload size                                                                                                                                |
 | `served_domains.headers`                 | :heavy_multiplication_x: |         | List of headers that should be used for this server block                                                                                       |
+| `served_domains.nginx_skip_server`       | :heavy_multiplication_x: |         | Don't generate a server entry for this server                                                                                                   |
 
 ## Global Values
 upstream, maps, and global vars are to be defined by using either
