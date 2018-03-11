@@ -115,7 +115,11 @@ http {
 
     {% for upstream in nginx_upstreams | default([]) %}
     upstream {{ upstream.name }} {
+        {% if upstream.path is defined %}
         server {{ upstream.path }};
+        {% else %}
+		{{ upstream.content }}
+		{% endif %}
     }
     {% endfor %}
     {% for map in nginx_maps | default([]) %}

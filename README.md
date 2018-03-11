@@ -64,13 +64,16 @@ upstream, maps, and global vars are to be defined by using either
 
 ### Upstream Vars
 `nginx_upstreams` is a list of dicts containing the following two entries.
-| Name   |      Required      | Default | Description                       |
-|:-------|:------------------:|:--------|:----------------------------------|
-| `name` | :heavy_check_mark: |         | Upstream name used in domain_vars |
-| `path` | :heavy_check_mark: |         | url or socket to php listener     |
+
+| Name      | Required           | Default | Description                                                                                                             |
+|:----------|:------------------:|:--------|:------------------------------------------------------------------------------------------------------------------------|
+| `name`    | :heavy_check_mark: |         | Upstream name used in domain_vars                                                                                       |
+| `path`    | :heavy_check_mark: |         | url or socket to php listener                                                                                           |
+| `content` | :heavy_check_mark: |         | Content to be placed in the upstream directive. Either `path` or `content` must be set. If both are set `path` is used. |
 
 ### Maps
 `nginx_maps` is a list of dicts containing the following two entries.
+
 | Name        |      Required      | Default | Description                       |
 |:------------|:------------------:|:--------|:----------------------------------|
 | `condition` | :heavy_check_mark: |         | Map condition used in domain_vars |
@@ -78,12 +81,14 @@ upstream, maps, and global vars are to be defined by using either
 
 ### Global Vars
 `nginx_global` is a list of dicts containing the following entry.
+
 | Name      |      Required      | Default | Description                            |
 |:----------|:------------------:|:--------|:---------------------------------------|
 | `content` | :heavy_check_mark: |         | content of the line that should be set |
 
 ### Pam Rules
 `nginx_pam_rules` is a list of dicts containing the following entry.
+
 | Name          |      Required      | Default | Description                                                           |
 |:--------------|:------------------:|:--------|:----------------------------------------------------------------------|
 | `type`        | :heavy_check_mark: |         | The type of the rule either `account`, `auth`,`password` or `session` |
