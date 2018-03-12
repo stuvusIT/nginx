@@ -118,8 +118,8 @@ http {
         {% if upstream.path is defined %}
         server {{ upstream.path }};
         {% else %}
-		{{ upstream.content }}
-		{% endif %}
+        {{ upstream.content }}
+        {% endif %}
     }
     {% endfor %}
     {% for map in nginx_maps | default([]) %}
