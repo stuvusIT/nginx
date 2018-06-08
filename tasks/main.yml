@@ -10,11 +10,6 @@
     name: apt-transport-https
   when: ansible_pkg_mgr == "apt"
 
-- name: Add repos
-  apt_repository:
-    repo: "ppa:nginx/stable"
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install "nginx" package
   apt:
     name: nginx-full
