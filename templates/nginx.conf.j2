@@ -23,6 +23,7 @@
     {%- endif -%}
 {% endmacro -%}
 
+include /etc/nginx/modules-enabled/*.conf;
 user {{ nginx_user }};
 worker_processes {{ nginx_worker_processes }};
 pid {{ nginx_pid }};
