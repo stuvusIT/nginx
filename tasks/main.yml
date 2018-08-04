@@ -22,7 +22,7 @@
 
 - name: Install "nginx" package
   apt:
-    name: nginx-full
+    name: nginx
   when: ansible_pkg_mgr == "apt"
 
 - name: Set nginx config
