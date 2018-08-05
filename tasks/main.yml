@@ -23,7 +23,12 @@
 - name: Install "nginx" package
   apt:
     name: nginx
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and not nginx_full
+
+- name: Install "nginx-full" package
+  apt:
+    name: nginx-full
+  when: ansible_pkg_mgr == "apt" and nginx_full
 
 - name: Set nginx config
   template:
