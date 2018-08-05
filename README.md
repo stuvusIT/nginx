@@ -9,6 +9,10 @@ An apt-based package manager
 
 ## Role Variables
 
+| Name                         | Required/Default | Description                                                                       |
+|:-----------------------------|------------------|-----------------------------------------------------------------------------------|
+| `nginx_install_full_package` | `false`          | Whether to install the `nginx-full` package instead of the normal `nginx` package |
+
 ### Nginx Vars
 See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) for a description of the variables.
 
