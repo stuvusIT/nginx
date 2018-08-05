@@ -28,4 +28,4 @@ nginx_gzip: "on"
 nginx_gzip_disable: "msie6"
 nginx_gzip_types: "text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript"
 nginx_server_names_hash_bucket_size: 64
-nginx_full: false
+nginx_install_full_package: false
