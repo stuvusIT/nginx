@@ -1,10 +1,4 @@
 ---
-- name: Update repositories cache
-  apt:
-    update_cache: yes
-  changed_when: false
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install apt-transport-https
   apt:
     name: apt-transport-https
@@ -18,6 +12,7 @@
 - name: Add repository
   apt_repository:
     repo: deb https://nginx.org/packages/mainline/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} nginx
+    update_cache: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install nginx package
