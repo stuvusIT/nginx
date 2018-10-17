@@ -75,7 +75,7 @@ http {
         root {{ served_domain.root }};
         {% endif %}
         {%- if served_domain.https -%}
-        listen ssl{% if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif %}{% if served_domain.default_server %} default_server {% endif %};
+        listen 443 ssl{% if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif %}{% if served_domain.default_server %} default_server {% endif %};
         ssl_certificate     {{ served_domain.fullchain_path }};
         ssl_certificate_key {{ served_domain.privkey_path }};
         {% else -%}
