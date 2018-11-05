@@ -1,11 +1,10 @@
-# Nginx Role 
+# nginx
 
 Sets up a nginx serving https with the configured domain names.
 
-
 ## Requirements
 
-An apt-based package manager
+An apt-based package manager and systemd
 
 ## Role Variables
 
