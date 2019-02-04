@@ -14,8 +14,8 @@
         {#- output domain name with appended prefix and suffix, with given separator and without leading dot -#}
         {{- separator }}{{ domain[:-1] -}}
     {%- else -%}
-        {% for prefix in domain_prefixes | default(['']) -%}{#- append all domain prefixes -#}
-            {%- for suffix in domain_suffixes | default(['']) -%}{#- append all domain suffixes -#}
+        {% for prefix in domain_prefixes -%}{#- append all domain prefixes -#}
+            {%- for suffix in domain_suffixes -%}{#- append all domain suffixes -#}
                 {#- output domain name with appended prefix and suffix, with given separator -#}
                 {{- separator }}{{ fix_domain( [prefix,domain,suffix] | join('.') ) -}}
             {%- endfor %}
@@ -76,13 +76,13 @@ http {
         {% endif %}
         {%- if served_domain.https -%}
         listen 443 ssl{% if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif %}{% if served_domain.default_server %} default_server {% endif %};
-        ssl_certificate     {{ served_domain.fullchain_path }};
-        ssl_certificate_key {{ served_domain.privkey_path }};
+        ssl_certificate     {{ served_domain.fullchain_path | default(nginx_default_fullchain_path) }};
+        ssl_certificate_key {{ served_domain.privkey_path | default(nginx_default_privkey_path) }};
         {% else -%}
         listen 80 {% if served_domain.default_server %} default_server{% endif %};
         {% endif -%}
         server_name
-        {%- if served_domain.domains|length > 0  -%}
+        {%- if served_domain.domains is defined and served_domain.domains|length > 0  -%}
             {%- for domain in served_domain.domains -%}
                 {{- build_domain_list( domain, ' ' ) -}}
             {%- endfor -%};

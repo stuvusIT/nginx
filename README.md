@@ -1,6 +1,6 @@
 # nginx
 
-Sets up a nginx serving https with the configured domain names.
+Sets up a nginx serving HTTPS with the configured domain names.
 
 ## Requirements
 
@@ -8,95 +8,112 @@ An apt-based package manager and systemd
 
 ## Role Variables
 
-| Name                         | Required/Default | Description                                                                       |
-|:-----------------------------|------------------|-----------------------------------------------------------------------------------|
-| `nginx_install_full_package` | `false`          | Whether to install the `nginx-full` package instead of the normal `nginx` package |
+| Role variable                  | Default | Description                                                                                   |
+| :----------------------------- | :------ | :-------------------------------------------------------------------------------------------- |
+| `nginx_install_full_package`   | `false` | Whether to install the `nginx-full` package instead of the normal `nginx` package             |
+| `nginx_default_privkey_path`   |         | Default value in [served domain objects](#served-domain-objects) without `privkey_path` key   |
+| `nginx_default_fullchain_path` |         | Default value in [served domain objects](#served-domain-objects) without `fullchain_path` key |
 
-### Nginx Vars
+### Nginx service-related
 See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) for a description of the variables.
 
-| Name                              |         Required         | Default                                                                                           |
-|:----------------------------------|:------------------------:|:--------------------------------------------------------------------------------------------------|
-| `nginx_user`                      | :heavy_multiplication_x: | `www-data`                                                                                        |
-| `nginx_worker_processes`          | :heavy_multiplication_x: | `auto`                                                                                            |
-| `nginx_pid`                       | :heavy_multiplication_x: | `/run/nginx.pid`                                                                                  |
-| `nginx_worker_connections`        | :heavy_multiplication_x: | `768`                                                                                             |
-| `nginx_sendfile`                  | :heavy_multiplication_x: | `on`                                                                                              |
-| `nginx_tcp_nopush`                | :heavy_multiplication_x: | `on`                                                                                              |
-| `nginx_tcp_nodelay`               | :heavy_multiplication_x: | `on`                                                                                              |
-| `nginx_keepalive_timeout`         | :heavy_multiplication_x: | `65`                                                                                              |
-| `nginx_types_hash_max_size`       | :heavy_multiplication_x: | `2048`                                                                                            |
-| `nginx_server_tokens`             | :heavy_multiplication_x: | `off`                                                                                             |
-| `nginx_default_type`              | :heavy_multiplication_x: | `application/octet-stream`                                                                        |
-| `nginx_ssl_protocols`             | :heavy_multiplication_x: | `TLSv1 TLSv1.1 TLSv1.2`                                                                           |
-| `nginx_ssl_ciphers`               | :heavy_multiplication_x: | `EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH`                                                 |
-| `nginx_ssl_prefer_server_ciphers` | :heavy_multiplication_x: | `on`                                                                                              |
-| `nginx_log_format`                | :heavy_multiplication_x: | See defaults                                                                                      |
-| `nginx_access_log`                | :heavy_multiplication_x: | `/var/log/nginx/access.log`                                                                       |
-| `nginx_error_log`                 | :heavy_multiplication_x: | `/var/log/nginx/error.log`                                                                        |
-| `nginx_gzip`                      | :heavy_multiplication_x: | `on`                                                                                              |
-| `nginx_gzip_disable`              | :heavy_multiplication_x: | `msie6`                                                                                           |
-| `nginx_gzip_types`                | :heavy_multiplication_x: | See defaults.                                                                                     |
-| `nginx_pam_rules`                 | :heavy_multiplication_x: | List of pam rules to configure a pam service. For a defenition of objects in that list see below. |
-| `nginx_pam_service_name`          | :heavy_multiplication_x: | Name of the pam service that should ne created. Mandatory when setting `nginx_pam_rules`          |
+| Role variable                     | Default                                                                                           |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------ |
+| `nginx_user`                      | `www-data`                                                                                        |
+| `nginx_worker_processes`          | `auto`                                                                                            |
+| `nginx_pid`                       | `/run/nginx.pid`                                                                                  |
+| `nginx_worker_connections`        | `768`                                                                                             |
+| `nginx_sendfile`                  | `on`                                                                                              |
+| `nginx_tcp_nopush`                | `on`                                                                                              |
+| `nginx_tcp_nodelay`               | `on`                                                                                              |
+| `nginx_keepalive_timeout`         | `65`                                                                                              |
+| `nginx_types_hash_max_size`       | `2048`                                                                                            |
+| `nginx_server_tokens`             | `off`                                                                                             |
+| `nginx_default_type`              | `application/octet-stream`                                                                        |
+| `nginx_ssl_protocols`             | `TLSv1 TLSv1.1 TLSv1.2`                                                                           |
+| `nginx_ssl_ciphers`               | `EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH`                                                 |
+| `nginx_ssl_prefer_server_ciphers` | `on`                                                                                              |
+| `nginx_log_format`                | See defaults                                                                                      |
+| `nginx_access_log`                | `/var/log/nginx/access.log`                                                                       |
+| `nginx_error_log`                 | `/var/log/nginx/error.log`                                                                        |
+| `nginx_gzip`                      | `on`                                                                                              |
+| `nginx_gzip_disable`              | `msie6`                                                                                           |
+| `nginx_gzip_types`                | See defaults.                                                                                     |
+| `nginx_pam_rules`                 | List of pam rules to configure a pam service. For a defenition of objects in that list see below. |
+| `nginx_pam_service_name`          | Name of the pam service that should ne created. Mandatory when setting `nginx_pam_rules`          |
 
-### Domain Vars
-| Name                                     | Required                 | Default | Description                                                                                                                                     |
-|:-----------------------------------------|:------------------------:|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------|
-| `domain_suffixes`                        | :heavy_check_mark:       |         | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com.                                                    |
-| `domain_preffixe`                        | :heavy_check_mark:       |         | Domain preffixe like www                                                                                                                        |
-| `served_domains`                         | :heavy_check_mark:       |         | A list of the served domains                                                                                                                    |
-| `served_domains.domains`                 | :heavy_check_mark:       |         | A list of server names if you do not enter a fully qualifed name like test.de. the server will append all combinations with the given preffixes |
-| `served_domains.privkey_path`            | :heavy_check_mark:       |         | The path to a privet key for the https cert                                                                                                     |
-| `served_domains.fullchain_path`          | :heavy_check_mark:       |         | The path to a cert for https                                                                                                                    |
-| `served_domains.default_server`          | :heavy_check_mark:       |         | Should this server be the default server to awnser request                                                                                      |
-| `served_domains.allowed_ip_ranges`       | :heavy_multiplication_x: | all     | IP ranges that are allowed to access this server by default are all ips allowed                                                                 |
-| `served_domains.https`                   | :heavy_check_mark:       |         | Should this domain use https                                                                                                                    |
-| `served_domains.index`                   | :heavy_check_mark:       |         | For which index files should nginx look                                                                                                         |
-| `served_domains.locations.condition`     | :heavy_check_mark:       |         | The condition under which this locations block is called                                                                                        |
-| `served_domains.locations.content`       | :heavy_check_mark:       |         | Content of the locations block                                                                                                                  |
-| `served_domains.locations.ignore_access` | :heavy_multiplication_x: |         | Ignore the default access behaviour                                                                                                             |
-| `served_domains.fastcgi_buffers`         | :heavy_multiplication_x: |         |                                                                                                                                                 |
-| `served_domains.client_max_body_size`    | :heavy_multiplication_x: |         | File Upload size                                                                                                                                |
-| `served_domains.headers`                 | :heavy_multiplication_x: |         | List of headers that should be used for this server block                                                                                       |
-| `served_domains.nginx_skip_server`       | :heavy_multiplication_x: |         | Don't generate a server entry for this server                                                                                                   |
+### Domain-related
 
-## Global Values
-upstream, maps, and global vars are to be defined by using either
-`nginx_upstreams`, `nginx_maps`, `nginx_global`.
+| Role variable      | Mandatory          | Description                                                                                  |
+| :----------------- | :----------------- | :------------------------------------------------------------------------------------------- |
+| `domain_suffixes`  | :heavy_check_mark: | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com. |
+| `domain_preffixes` | :heavy_check_mark: | Domain preffixes like www                                                                    |
+| `served_domains`   | :heavy_check_mark: | List of [served domain objects](#served-domain-objects)                                      |
+
+#### Served domain objects
+
+A served domain object is a dictionary which can contain the following keys.
+
+| Key                       |        Mandatory         | Description                                                                                    |
+| :------------------------ | :----------------------: | :--------------------------------------------------------------------------------------------- |
+| `domains`                 | :heavy_multiplication_x: | A list of server names. Semantically defaults to `_`. See below regarding the syntax.          |
+| `fullchain_path`          | :heavy_multiplication_x: | HTTPS certificate path. Defaults to the content of `nginx_default_fullchain_path`.             |
+| `privkey_path`            | :heavy_multiplication_x: | Private key path for the certificate. Defaults to the content of `nginx_default_privkey_path`. |
+| `default_server`          |    :heavy_check_mark:    | Should this server be the default server to answer request                                     |
+| `allowed_ip_ranges`       | :heavy_multiplication_x: | IP ranges that are allowed to access this server. By default all IPs are allowed.              |
+| `https`                   |    :heavy_check_mark:    | Should this domain use HTTPS                                                                   |
+| `index`                   |    :heavy_check_mark:    | For which index files should nginx look                                                        |
+| `locations.condition`     |    :heavy_check_mark:    | The condition under which this locations block is called                                       |
+| `locations.content`       |    :heavy_check_mark:    | Content of the locations block                                                                 |
+| `locations.ignore_access` | :heavy_multiplication_x: | Ignore the default access behaviour                                                            |
+| `fastcgi_buffers`         | :heavy_multiplication_x: |                                                                                                |
+| `client_max_body_size`    | :heavy_multiplication_x: | File Upload size                                                                               |
+| `headers`                 | :heavy_multiplication_x: | List of headers that should be used for this server block                                      |
+| `nginx_skip_server`       | :heavy_multiplication_x: | Don't generate a server entry for this server                                                  |
+
+For the `domains` key, fully qualified server names must end in a dot (i.e. `test.de.`).
+Otherwise, `domain_suffixes` and `domain_prefixes` are applied.
 
 ### Upstream Vars
-`nginx_upstreams` is a list of dicts containing the following two entries.
 
-| Name      | Required           | Default | Description                                                                                                             |
-|:----------|:------------------:|:--------|:------------------------------------------------------------------------------------------------------------------------|
-| `name`    | :heavy_check_mark: |         | Upstream name used in domain_vars                                                                                       |
-| `path`    | :heavy_check_mark: |         | url or socket to php listener                                                                                           |
-| `content` | :heavy_check_mark: |         | Content to be placed in the upstream directive. Either `path` or `content` must be set. If both are set `path` is used. |
+`nginx_upstreams` is a list of dictionaries containing the following keys.
+
+| Name      |        Mandatory        | Description                                     |
+| :-------- | :---------------------: | :---------------------------------------------- |
+| `name`    |   :heavy_check_mark:    | Upstream name used in domain_vars               |
+| `path`    | If `content` is not set | URL or socket to PHP listener                   |
+| `content` |  If `path` is not set   | Content to be placed in the upstream directive. |
+
+At least one of `path` and `content` must be set.
+If both are set, then `path` is used and `content` is ignored.
 
 ### Maps
-`nginx_maps` is a list of dicts containing the following two entries.
 
-| Name        |      Required      | Default | Description                       |
-|:------------|:------------------:|:--------|:----------------------------------|
-| `condition` | :heavy_check_mark: |         | Map condition used in domain_vars |
-| `content`   | :heavy_check_mark: |         | map content                       |
+`nginx_maps` is a list of dictionaries containing the following keys.
+
+| Name        |     Mandatory      | Description                       |
+| :---------- | :----------------: | :-------------------------------- |
+| `condition` | :heavy_check_mark: | Map condition used in domain_vars |
+| `content`   | :heavy_check_mark: | map content                       |
 
 ### Global Vars
-`nginx_global` is a list of dicts containing the following entry.
 
-| Name      |      Required      | Default | Description                            |
-|:----------|:------------------:|:--------|:---------------------------------------|
-| `content` | :heavy_check_mark: |         | content of the line that should be set |
+`nginx_global` is a list of dictionaries containing the following entry.
+
+| Name      |     Mandatory      | Description                            |
+| :-------- | :----------------: | :------------------------------------- |
+| `content` | :heavy_check_mark: | content of the line that should be set |
 
 ### Pam Rules
-`nginx_pam_rules` is a list of dicts containing the following entry.
 
-| Name          |      Required      | Default | Description                                                           |
-|:--------------|:------------------:|:--------|:----------------------------------------------------------------------|
-| `type`        | :heavy_check_mark: |         | The type of the rule either `account`, `auth`,`password` or `session` |
-| `control`     | :heavy_check_mark: |         | The control behavior of the rule                                      |
-| `module_path` | :heavy_check_mark: |         | the module name where the request should be handed to                 |
+`nginx_pam_rules` is a list of dictionaries containing the following keys.
+
+| Name          |     Mandatory      | Description                                                           |
+| :------------ | :----------------: | :-------------------------------------------------------------------- |
+| `type`        | :heavy_check_mark: | The type of the rule either `account`, `auth`,`password` or `session` |
+| `control`     | :heavy_check_mark: | The control behavior of the rule                                      |
+| `module_path` | :heavy_check_mark: | the module name where the request should be handed to                 |
+
 For more information on pam rules see the [Linux Administration Guide](http://www.linux-pam.org/Linux-PAM-html/sag-configuration-file.html)
 
 ## Example Playbook
@@ -160,11 +177,9 @@ served_domains:
 
 ```
 
-
 ### Result
 
-A running nginx with specified config
-
+A running nginx with the specified configuration.
 
 ## License
 
