@@ -76,8 +76,8 @@ http {
         {% endif %}
         {%- if served_domain.https -%}
         listen 443 ssl{% if served_domain.enable_http2 is defined and served_domain.enable_http2 %} http2 {% endif %}{% if served_domain.default_server %} default_server {% endif %};
-        ssl_certificate     {{ served_domain.fullchain_path }};
-        ssl_certificate_key {{ served_domain.privkey_path }};
+        ssl_certificate     {{ served_domain.fullchain_path | default(nginx_default_fullchain_path) }};
+        ssl_certificate_key {{ served_domain.privkey_path | default(nginx_default_privkey_path) }};
         {% else -%}
         listen 80 {% if served_domain.default_server %} default_server{% endif %};
         {% endif -%}
