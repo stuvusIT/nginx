@@ -82,7 +82,7 @@ http {
         listen 80 {% if served_domain.default_server %} default_server{% endif %};
         {% endif -%}
         server_name
-        {%- if served_domain.domains|length > 0  -%}
+        {%- if served_domain.domains is defined and served_domain.domains|length > 0  -%}
             {%- for domain in served_domain.domains -%}
                 {{- build_domain_list( domain, ' ' ) -}}
             {%- endfor -%};
