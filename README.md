@@ -59,7 +59,7 @@ A served domain object is a dictionary which can contain the following keys.
 | `domains`                 | :heavy_multiplication_x: | A list of server names. Semantically defaults to `_`. See below regarding the syntax.          |
 | `fullchain_path`          | :heavy_multiplication_x: | HTTPS certificate path. Defaults to the content of `nginx_default_fullchain_path`.             |
 | `privkey_path`            | :heavy_multiplication_x: | Private key path for the certificate. Defaults to the content of `nginx_default_privkey_path`. |
-| `default_server`          |    :heavy_check_mark:    | Should this server be the default server to awnser request                                     |
+| `default_server`          |    :heavy_check_mark:    | Should this server be the default server to answer request                                     |
 | `allowed_ip_ranges`       | :heavy_multiplication_x: | IP ranges that are allowed to access this server. By default all IPs are allowed.              |
 | `https`                   |    :heavy_check_mark:    | Should this domain use HTTPS                                                                   |
 | `index`                   |    :heavy_check_mark:    | For which index files should nginx look                                                        |
