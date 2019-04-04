@@ -33,3 +33,9 @@
     state: reloaded
     enabled: True
   when: ansible_service_mgr == "systemd" and nginx_reload.changed
+
+- name: Allow www-data to access shadow for PAM
+  user:
+    append: yes
+    groups: shadow
+    name: www-data
