@@ -2,9 +2,11 @@
 
 Sets up a nginx serving HTTPS with the configured domain names.
 
+
 ## Requirements
 
 An apt-based package manager and systemd
+
 
 ## Role Variables
 
@@ -13,6 +15,7 @@ An apt-based package manager and systemd
 | `nginx_install_full_package`   | `false` | Whether to install the `nginx-full` package instead of the normal `nginx` package             |
 | `nginx_default_privkey_path`   |         | Default value in [served domain objects](#served-domain-objects) without `privkey_path` key   |
 | `nginx_default_fullchain_path` |         | Default value in [served domain objects](#served-domain-objects) without `fullchain_path` key |
+
 
 ### Nginx service-related
 See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) for a description of the variables.
@@ -41,6 +44,8 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `nginx_gzip_types`                | See defaults.                                                                                     |
 | `nginx_pam_rules`                 | List of pam rules to configure a pam service. For a defenition of objects in that list see below. |
 | `nginx_pam_service_name`          | Name of the pam service that should ne created. Mandatory when setting `nginx_pam_rules`          |
+| `nginx_allow_shadow`              | Allow nginx (www-data) access to shadow group, needed for PAM authentication                      |
+
 
 ### Domain-related
 
@@ -49,6 +54,7 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 | `domain_suffixes`  | :heavy_check_mark: | Domain suffixes to support multiple domain endings like ticket.test.de. and ticket.test.com. |
 | `domain_preffixes` | :heavy_check_mark: | Domain preffixes like www                                                                    |
 | `served_domains`   | :heavy_check_mark: | List of [served domain objects](#served-domain-objects)                                      |
+
 
 #### Served domain objects
 
@@ -74,6 +80,7 @@ A served domain object is a dictionary which can contain the following keys.
 For the `domains` key, fully qualified server names must end in a dot (i.e. `test.de.`).
 Otherwise, `domain_suffixes` and `domain_prefixes` are applied.
 
+
 ### Upstream Vars
 
 `nginx_upstreams` is a list of dictionaries containing the following keys.
@@ -87,6 +94,7 @@ Otherwise, `domain_suffixes` and `domain_prefixes` are applied.
 At least one of `path` and `content` must be set.
 If both are set, then `path` is used and `content` is ignored.
 
+
 ### Maps
 
 `nginx_maps` is a list of dictionaries containing the following keys.
@@ -96,6 +104,7 @@ If both are set, then `path` is used and `content` is ignored.
 | `condition` | :heavy_check_mark: | Map condition used in domain_vars |
 | `content`   | :heavy_check_mark: | map content                       |
 
+
 ### Global Vars
 
 `nginx_global` is a list of dictionaries containing the following entry.
@@ -103,6 +112,7 @@ If both are set, then `path` is used and `content` is ignored.
 | Name      |     Mandatory      | Description                            |
 | :-------- | :----------------: | :------------------------------------- |
 | `content` | :heavy_check_mark: | content of the line that should be set |
+
 
 ### Pam Rules
 
@@ -116,9 +126,11 @@ If both are set, then `path` is used and `content` is ignored.
 
 For more information on pam rules see the [Linux Administration Guide](http://www.linux-pam.org/Linux-PAM-html/sag-configuration-file.html)
 
+
 ## Example Playbook
 
 Configure a served_domain like 
+
 
 ### Vars
 
@@ -177,9 +189,11 @@ served_domains:
 
 ```
 
+
 ### Result
 
 A running nginx with the specified configuration.
+
 
 ## License
 
