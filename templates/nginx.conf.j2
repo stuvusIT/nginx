@@ -47,9 +47,9 @@ http {
     ssl_ciphers {{ nginx_ssl_ciphers -}};
     ssl_prefer_server_ciphers {{ nginx_ssl_prefer_server_ciphers -}};
 
-    log_format {{ nginx_log_format }};
+    log_format ext_combined {{ nginx_log_format }};
 
-    access_log {{ nginx_access_log -}};
+    access_log {{ nginx_access_log }} ext_combined;
     error_log {{ nginx_error_log -}};
 
     gzip {{ nginx_gzip -}};
