@@ -36,6 +36,16 @@
 
 - name: Allow www-data to access shadow for PAM
   user:
-    append: yes
+    append: True
     groups: shadow
     name: www-data
+  when: nginx_allow_shadow
+
+# stupid shell workaround needed since ansible still lacks an option to remove users from groups
+# see also: https://github.com/ansible/ansible/issues/11024
+- name: Forbid www-data shadow group access
+  shell: deluser www-data shadow
+  register: nginx_allow_shadow_remove
+  when: not nginx_allow_shadow
+  changed_when: nginx_allow_shadow_remove.rc != 6
+  failed_when: nginx_allow_shadow_remove.rc != 6 and nginx_allow_shadow_remove.rc != 0

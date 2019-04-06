@@ -33,3 +33,4 @@ domain_suffixes:
   - ""
 domain_prefixes:
   - ""
+nginx_allow_shadow: False
