@@ -28,11 +28,10 @@
     dest: "/etc/pam.d/{{ nginx_pam_service_name | mandatory }}"
   when: nginx_pam_rules is defined
 
-- name: Enable and start nginx
-  systemd:
-    name: nginx.service
-    state: reloaded
-    enabled: True
+- debug:
+    msg: Enable and start nginx
+  # noqa 503
+  notify: Enable and start nginx
   when: ansible_service_mgr == "systemd" and nginx_reload.changed
 
 - name: Allow www-data to access shadow for PAM
@@ -44,7 +43,7 @@
 
 # stupid shell workaround needed since ansible still lacks an option to remove users from groups
 # see also: https://github.com/ansible/ansible/issues/11024
-- name: Forbid www-data shadow group access
+- name: Forbid www-data shadow group access # noqa 305
   shell: deluser www-data shadow
   register: nginx_allow_shadow_remove
   when: not nginx_allow_shadow
