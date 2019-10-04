@@ -1,3 +1,5 @@
+#{{ ansible_managed }}
+#jinja2: lstrip_blocks: True
 {% macro fix_domain(domain) %}{#- remove leading and following dot -#}
     {%- if domain[0] == '.' and domain[-1] == '.' -%}
         {{ domain[1:-1] }}
@@ -60,12 +62,14 @@ http {
         {{ global_var.content }}
     {% endfor %}
     {% endif %}
-    {% for served_domain in served_domains if not served_domain.nginx_skip_server | default(false) -%}
+    {%- for served_domain in served_domains if not served_domain.nginx_skip_server | default(false) %}
+
     server {
-        {% for header in served_domain.headers | default([]) %}
+        {% for header in served_domain.headers | default([]) -%}
         add_header {{ header }};
         {% endfor %}
-        {%- if served_domain.return is defined -%}
+
+        {% if served_domain.return is defined -%}
         return {{ served_domain.return }};
         {%- endif %}
         {%- if served_domain.index_files is defined -%}
@@ -96,30 +100,32 @@ http {
             fastcgi_buffers {{ served_domain.fastcgi_buffers }}
         {%- endif %}
         {%- for configuration in served_domain.configurations | default([]) %}
-            {{ configuration.content }}
+            {{- configuration.content | indent( width=12) }}
         {%- endfor %}
-        {%- for location_var in served_domain.locations | default([]) -%}
+        {%- for location_var in served_domain.locations | default([]) %}
+
         location {{ location_var.condition }} {
-            {%- if location_var.ignore_access is defined -%}
+            {% if location_var.ignore_access is defined -%}
                 {%- for ip_range in served_domain.allowed_ip_ranges -%}
                 allow {{ ip_range }};
                 {%- endfor %}
                 deny all;
             {%- endif %}
-            {{ location_var.content }}
+            {{- location_var.content | indent( width=12) }}
         }
     {% endfor -%}
     }
 
     {% endfor %}
 
-    {% for upstream in nginx_upstreams | default([]) %}
+    {%- for upstream in nginx_upstreams | default([]) -%}
     upstream {{ upstream.name }} {
         {% if upstream.path is defined %}
         server {{ upstream.path }};
         {% else %}
-        {{ upstream.content }}
+        {{- upstream.content | indent( width=8 )}}
         {% endif %}
+
     }
     {% endfor %}
     {% for map in nginx_maps | default([]) %}
@@ -127,4 +133,5 @@ http {
         {{ map.content }};
     }
     {% endfor %}
+
 }
