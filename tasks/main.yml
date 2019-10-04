@@ -20,19 +20,13 @@
     src: templates/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
     validate: /usr/sbin/nginx -t -c %s
-  register: nginx_reload
+  notify: Enable and start nginx
 
 - name: Place template PAM nginx file
   template:
     src: templates/pam_service_file.j2
     dest: "/etc/pam.d/{{ nginx_pam_service_name | mandatory }}"
   when: nginx_pam_rules is defined
-
-- debug:
-    msg: Enable and start nginx
-  # noqa 503
-  notify: Enable and start nginx
-  when: ansible_service_mgr == "systemd" and nginx_reload.changed
 
 - name: Allow www-data to access shadow for PAM
   user:
