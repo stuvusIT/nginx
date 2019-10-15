@@ -27,6 +27,7 @@
     src: templates/pam_service_file.j2
     dest: "/etc/pam.d/{{ nginx_pam_service_name | mandatory }}"
   when: nginx_pam_rules is defined
+  notify: Enable and start nginx
 
 - name: Allow www-data to access shadow for PAM
   user:
@@ -34,6 +35,7 @@
     groups: shadow
     name: www-data
   when: nginx_allow_shadow
+  notify: Enable and start nginx
 
 # stupid shell workaround needed since ansible still lacks an option to remove users from groups
 # see also: https://github.com/ansible/ansible/issues/11024
