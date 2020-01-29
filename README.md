@@ -129,7 +129,7 @@ For more information on pam rules see the [Linux Administration Guide](http://ww
 
 ## Example Playbook
 
-Configure a served_domain like 
+Configure a served_domain like
 
 
 ### Vars
@@ -153,7 +153,7 @@ nginx_maps:
 domain_prefixes:
   - www
 served_domains:
-  - domains: 
+  - domains:
     - ticket
     - zammad
     privkey_path: <path at target server>  # privkey.pem will placed there>
@@ -173,11 +173,11 @@ served_domains:
     locations:
       - condition: /
         content:
-        | 
+        |
           try_files $1 $uri $uri/ /index.php$is_args$args;
       - condition: ~ ^/index\.php(.*)$
         content:
-        | 
+        |
          fastcgi_index index.php;
          include /etc/nginx/fastcgi_params;
          try_files $uri =404;
