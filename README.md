@@ -68,7 +68,7 @@ A served domain object is a dictionary which can contain the following keys.
 | `default_server`          |    :heavy_check_mark:    | Should this server be the default server to answer request                                     |
 | `allowed_ip_ranges`       | :heavy_multiplication_x: | IP ranges that are allowed to access this server. By default all IPs are allowed.              |
 | `https`                   |    :heavy_check_mark:    | Should this domain use HTTPS                                                                   |
-| `index`                   |    :heavy_check_mark:    | For which index files should nginx look                                                        |
+| `index_files`             |    :heavy_check_mark:    | For which index files should nginx look                                                        |
 | `locations.condition`     |    :heavy_check_mark:    | The condition under which this locations block is called                                       |
 | `locations.content`       |    :heavy_check_mark:    | Content of the locations block                                                                 |
 | `locations.ignore_access` | :heavy_multiplication_x: | Ignore the default access behaviour                                                            |
