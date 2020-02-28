@@ -15,11 +15,20 @@
   apt:
     name: "nginx{% if nginx_install_full_package %}-full{% endif %}"
 
+- name: Create config file for blocked IP addresses
+  copy:
+    force: false
+    src: deny.conf
+    dest: /etc/nginx/conf.d/deny.conf
+    mode: 0644
+    owner: root
+    group: root
+
 - name: Set nginx config
   template:
     src: templates/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
-    validate: /usr/sbin/nginx -t -c %s
+    validate: grep -v include %s | /usr/sbin/nginx -t -c /dev/stdin # Validate conf without includes
   notify: Enable and start nginx
 
 - name: Place template PAM nginx file
