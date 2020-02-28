@@ -54,3 +54,18 @@
   when: not nginx_allow_shadow
   changed_when: nginx_allow_shadow_remove.rc != 6
   failed_when: nginx_allow_shadow_remove.rc != 6 and nginx_allow_shadow_remove.rc != 0
+
+- name: Crate script directory
+  file:
+    path: /etc/nginx/scripts.d
+    state: directory
+
+- name: Copy scripts
+  copy:
+    src: "{{ item }}"
+    dest: /etc/nginx/scripts.d/{{ item }}
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - ip.sh
