@@ -35,7 +35,7 @@ events {
 }
 
 http {
-    include conf.d/deny.conf;
+    include /etc/nginx/conf.d/deny.conf;
 
     sendfile {{ nginx_sendfile -}};
     tcp_nopush {{ nginx_tcp_nopush -}};
