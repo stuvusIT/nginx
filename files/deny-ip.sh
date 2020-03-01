@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Usage:
-# (1) ./ip ban <ip-address>
-# (2) ./ip unban <ip-address>
-# (3) ./ip flush
+# (1) ./deny-ip ban <ip-address>
+# (2) ./deny-ip unban <ip-address>
+# (3) ./deny-ip flush
 
 set -euo pipefail
 
