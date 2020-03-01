@@ -57,15 +57,15 @@
 
 - name: Crate script directory
   file:
-    path: /etc/nginx/scripts.d
+    path: /etc/nginx/script.d
     state: directory
 
 - name: Copy scripts
   copy:
     src: "{{ item }}"
-    dest: /etc/nginx/scripts.d/{{ item }}
+    dest: /etc/nginx/script.d/{{ item }}
     mode: 0755
     owner: root
     group: root
   with_items:
-    - ip.sh
+    - deny-ip.sh
