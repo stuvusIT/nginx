@@ -55,7 +55,7 @@
   changed_when: nginx_allow_shadow_remove.rc != 6
   failed_when: nginx_allow_shadow_remove.rc != 6 and nginx_allow_shadow_remove.rc != 0
 
-- name: Crate script directory
+- name: Create script directory
   file:
     path: /etc/nginx/script.d
     state: directory
