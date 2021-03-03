@@ -60,26 +60,29 @@ See the [nginx doc](https://nginx.org/en/docs/http/ngx_http_core_module.html) fo
 
 A served domain object is a dictionary which can contain the following keys.
 
-| Key                       |        Mandatory         | Description                                                                                    |
-| :------------------------ | :----------------------: | :--------------------------------------------------------------------------------------------- |
-| `domains`                 | :heavy_multiplication_x: | A list of server names. Semantically defaults to `_`. See below regarding the syntax.          |
-| `fullchain_path`          | :heavy_multiplication_x: | HTTPS certificate path. Defaults to the content of `nginx_default_fullchain_path`.             |
-| `privkey_path`            | :heavy_multiplication_x: | Private key path for the certificate. Defaults to the content of `nginx_default_privkey_path`. |
-| `default_server`          |    :heavy_check_mark:    | Should this server be the default server to answer request                                     |
-| `allowed_ip_ranges`       | :heavy_multiplication_x: | IP ranges that are allowed to access this server. By default all IPs are allowed.              |
-| `https`                   |    :heavy_check_mark:    | Should this domain use HTTPS                                                                   |
-| `index_files`             |    :heavy_check_mark:    | For which index files should nginx look                                                        |
-| `locations.condition`     |    :heavy_check_mark:    | The condition under which this locations block is called                                       |
-| `locations.content`       |    :heavy_check_mark:    | Content of the locations block                                                                 |
-| `locations.ignore_access` | :heavy_multiplication_x: | Ignore the default access behaviour                                                            |
-| `fastcgi_buffers`         | :heavy_multiplication_x: |                                                                                                |
-| `client_max_body_size`    | :heavy_multiplication_x: | File Upload size                                                                               |
-| `headers`                 | :heavy_multiplication_x: | List of headers that should be used for this server block                                      |
-| `nginx_skip_server`       | :heavy_multiplication_x: | Don't generate a server entry for this server                                                  |
+| Key                       |        Mandatory         | Description                                                                                                                                       |
+| :------------------------ | :----------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `domains`                 | :heavy_multiplication_x: | A list of server names. Semantically defaults to `_`. See below regarding the syntax.                                                             |
+| `fullchain_path`          | :heavy_multiplication_x: | HTTPS certificate path. Defaults to the content of `nginx_default_fullchain_path`.                                                                |
+| `privkey_path`            | :heavy_multiplication_x: | Private key path for the certificate. Defaults to the content of `nginx_default_privkey_path`.                                                    |
+| `default_server`          |    :heavy_check_mark:    | Should this server be the default server to answer request                                                                                        |
+| `allowed_ip_ranges`       | :heavy_multiplication_x: | IP ranges that are allowed to access this server. By default all IPs are allowed. Can be turned of for a location using `locations.ignore_access` |
+| `https`                   |    :heavy_check_mark:    | Should this domain use HTTPS                                                                                                                      |
+| `index_files`             |    :heavy_check_mark:    | For which index files should nginx look                                                                                                           |
+| `locations.condition`     |    :heavy_check_mark:    | The condition under which this locations block is called                                                                                          |
+| `locations.content`       |    :heavy_check_mark:    | Content of the locations block                                                                                                                    |
+| `locations.ignore_access` | :heavy_multiplication_x: | Ignore the default access behaviour configured by `allowed_ip_ranges`                                                                             |
+| `fastcgi_buffers`         | :heavy_multiplication_x: |                                                                                                                                                   |
+| `client_max_body_size`    | :heavy_multiplication_x: | File Upload size                                                                                                                                  |
+| `headers`                 | :heavy_multiplication_x: | List of headers that should be used for this server block                                                                                         |
+| `nginx_skip_server`       | :heavy_multiplication_x: | Don't generate a server entry for this server                                                                                                     |
 
 For the `domains` key, fully qualified server names must end in a dot (i.e. `test.de.`).
 Otherwise, `domain_suffixes` and `domain_prefixes` are applied.
 
+If you want to use `allowed_ip_ranges` on a server behind a reverseproxy,
+the reverseproxy needs to be configured to pass the real ip (see for example [nginx docs](https://www.nginx.com/resources/wiki/start/topics/examples/forwarded/)) and the host itself must use the passed ip (see [nginx docs](https://nginx.org/en/docs/http/ngx_http_realip_module.html)).
+To configure the latter using this role [Global Vars](#global-vars) can be used.
 
 ### Upstream Vars
 
