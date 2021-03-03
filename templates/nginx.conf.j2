@@ -107,12 +107,12 @@ http {
         {%- for location_var in served_domain.locations | default([]) %}
 
         location {{ location_var.condition }} {
-            {% if location_var.ignore_access is defined -%}
+            {% if location_var.ignore_access is not defined and served_domain.allowed_ip_ranges is defined  -%}
                 {%- for ip_range in served_domain.allowed_ip_ranges -%}
                 allow {{ ip_range }};
                 {%- endfor %}
                 deny all;
-            {%- endif %}
+            {% endif %}
             {{- location_var.content | indent( width=12) }}
         }
     {% endfor -%}
